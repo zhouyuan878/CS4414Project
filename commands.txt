@@ -1,0 +1,19 @@
+Commands for Game:
+__________________
+
+Human-Human:
+talk
+attack
+trade
+follow
+
+Human-World:
+move
+look
+
+Human-Block:
+destroy
+mix
+eat
+take
+drop
