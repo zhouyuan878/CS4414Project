@@ -10,9 +10,9 @@ follow
 Human-World:
 move
 look
+create
 
 Human-Block:
-destroy
 mix
 eat
 take
