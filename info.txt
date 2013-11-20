@@ -11,5 +11,6 @@ Health
 Attack
 Defense
 Inventory (size)
+Inventory (contents)
 
 Combat- When a player attacks a block or another player, they deal damage equal to their attack divided by their opponent's defense, rounded down. Blocks have a default defense of 3.
