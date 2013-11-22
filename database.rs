@@ -54,20 +54,20 @@ impl player {
       yPos: 0,
    }
    
-   fn eat(~player: player) {
-      match player.block.color {
-         ~'r' => {player.attack += 1}
-         ~'b' => {player.defense += 1}
-         ~'g' => {player.health += 1}
+   fn eat(self) {
+      match self.block.color {
+         ~'r' => {self.attack += 1}
+         ~'b' => {self.defense += 1}
+         ~'g' => {self.health += 1}
          _    => {println("Fingers aren't tasty")}
       }
       block.color = 'n';
    }
 
-   fn take(~player: player) {
-      if (player.block.color != 'n') { println("Don't get greedy"); }
+   fn take(self) {
+      if (self.block.color != 'n') { println("Don't get greedy"); }
       else {
-         player.block = checkForBlock(xPos+xDir,yPos+yDir);
+         self.block = checkForBlock(xPos+xDir,yPos+yDir);
       }
    }
 }
