@@ -17,6 +17,12 @@ struct map {
    capacity: float
 }
 
+impl map {
+   fn new -> map {
+      
+   }
+}
+
 struct block {
    color: char,
    mut xPos: int,
@@ -45,6 +51,7 @@ impl block {
      else {return first}
      }
     }
+}
 
 struct player {
    mut health: int,
