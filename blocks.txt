@@ -16,7 +16,7 @@ drop- -1 inventory
 
 Blue-
 source - blue+blue
-eat- +1 inventory
+eat- +1 defense
 destroy- +1 defense
 take- talk diabled for 10 seconds
 drop- 
