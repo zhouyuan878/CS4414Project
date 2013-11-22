@@ -11,26 +11,34 @@ struct map {
    capacity: float
 }
 
-struct blockInfo {
-   makeup: int[red, green, blue],
+struct block {
+   color: char,
+   mut xPos: int,
+   mut yPos: int
    //need to represent eat, destroy, etc. as functions, blockInfo needs to be able to get them
 }
 
-struct playerRGB {
+struct player {
    mut red: int,
    mut green: int,
    mut blue: int,
    mut health: int,
    mut attack: int,
    mut defense: int,
-   mut invSize: int,
-   mut inv: blockInfo[]//not sure if this is correct syntax for declaring a variable size array- or if that's possible without simply destroying the old one and replacing it.
+   mut block: blockInfo,
+   mut xPos: int,
+   mut yPos: int
+
+   //mut invSize: int,
+   //mut inv: blockInfo[]//not sure if this is correct syntax for declaring a variable size array- or if that's possible without simply destroying the old one and replacing it.
 }
+
+fn eat(
 
 fn addInventory(~player: playerRGB, ~block: blockInfo) {
 
 }
 
 fn readCommand(args: string[], target) {
-   
+
 }
