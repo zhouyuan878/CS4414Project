@@ -5,8 +5,14 @@ use std::*
 
 static mut worldRGB: int[] = [0, 0, 0];
 
+struct object {
+   c_block: block,
+   c_player: player
+}
+
 struct map {
-   mut field: Object[Object[]]
+   mut field: bool[bool[]]
+   mut ~coordinates: object[object[]]
    size: int,//it may be simpler to just fold this whole thing into Rust's native vector type, let it figure out when to get bigger
    capacity: float
 }
@@ -35,28 +41,41 @@ struct player {
    //mut inv: blockInfo[]//not sure if this is correct syntax for declaring a variable size array- or if that's possible without simply destroying the old one and replacing it.
 }
 
-fn eat(~player: player) {
-   match player.block.color {
-      ~'r' => {player.attack += 1}
-      ~'b' => {player.defense += 1}
-      ~'g' => {player.health += 1}
-      _    => {println("Fingers aren't tasty")}
-   }
-   block.color = 'n';
-}
-
-fn take(~player: player) {
-   if (player.block.color != 'n') { println("Don't get greedy"); }
-   else {
-      player.block = checkForBlock(xPos+xDir,yPos+yDir);
+impl player {
+   
+   fn new -> player {
+      red: 1,
+      green: 1,
+      blue: 1,
+      health: 1,
+      attack: 1,
+      defense: 1,
+      xPos: 0,
+      yPos: 0,
    }
    
+   fn eat(~player: player) {
+      match player.block.color {
+         ~'r' => {player.attack += 1}
+         ~'b' => {player.defense += 1}
+         ~'g' => {player.health += 1}
+         _    => {println("Fingers aren't tasty")}
+      }
+      block.color = 'n';
+   }
+
+   fn take(~player: player) {
+      if (player.block.color != 'n') { println("Don't get greedy"); }
+      else {
+         player.block = checkForBlock(xPos+xDir,yPos+yDir);
+      }
+   }
 }
 
-fn addInventory(~player: player, ~block: block) {
+/*fn addInventory(~player: player, ~block: block) {
 
 }
 
 fn readCommand(args: string[], target) {
 
-}
+}*/
