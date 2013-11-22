@@ -38,6 +38,7 @@ fn eat(~player: player, ~block: block) {
       ~'r' => {player.attack += 1}
       ~'b' => {player.defense += 1}
       ~'g' => {player.health += 1}
+      _    => {println("Fingers aren't tasty")}
    }
 }
 
