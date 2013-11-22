@@ -1,37 +1,50 @@
 Basic interactions are categorized as "aggresive (red)", "cooperative (green)", or "passive (blue)". Different scenarios create different effects. Colors can mix to create blocks, blocks can also mix to create blocks. Below are the basic types of blocks, and some of their characteristics.
 
 Red-
+source - red+red
 eat- +1 attack
 destroy- 3 damage to adjacent objects
 take- -1 health
 drop- immobile for 10 seconds
 
 Green-
+source - green+green
 eat- +1 health
 destroy- -1 attack, +1 health to adjacent objects
 take- -1 attack
 drop- -1 inventory
 
 Blue-
+source - blue+blue
 eat- +1 inventory
 destroy- +1 defense
 take- talk diabled for 10 seconds
 drop- 
 
 Yellow-
+source - red+green
 eat- 
 destroy-
 take-
 drop-
 
-Purple-
+Magenta-
+source - red+blue 
 eat-
 destroy-
 take-
 drop-
 
-Teal-
-Gray-
+Cyan-
+source - green+blue 
+eat-
+destroy-
+take-
+drop-
 
-
-
+White-
+source - magenta+cyan / yellow+cyan / yellow+magenta
+eat-
+destroy-
+take-
+drop-
