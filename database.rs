@@ -6,7 +6,7 @@ use std::*
 static mut worldRGB: int[] = [0, 0, 0];
 
 struct map {
-   mut field: bool[bool[]]
+   mut field: Object[Object[]]
    size: int,//it may be simpler to just fold this whole thing into Rust's native vector type, let it figure out when to get bigger
    capacity: float
 }
@@ -40,6 +40,10 @@ fn eat(~player: player, ~block: block) {
       ~'g' => {player.health += 1}
       _    => {println("Fingers aren't tasty")}
    }
+}
+
+fn take(~player: player, ~block: block) {
+
 }
 
 fn addInventory(~player: player, ~block: block) {
