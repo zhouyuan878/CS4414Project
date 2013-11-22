@@ -21,6 +21,16 @@ impl map {
    fn new -> map {
       
    }
+   
+   fn checkForBlock(xPos,yPos) -> block {
+      if (map.field[xPos,yPos] != null) {
+         Object tmp = map.coordinates[xPos,yPos];
+         match tmp {
+            Block(tmp) => return tmp;
+            
+         }
+      }
+   }
 }
 
 struct block {
@@ -113,16 +123,6 @@ impl player {
       }
    }
 }
-
-   fn checkForBlock(xPos,yPos) -> block {
-      if (map.field[xPos,yPos] != null) {
-         Object tmp = map.coordinates[xPos,yPos];
-         match tmp {
-            Block(tmp) => return tmp;
-            
-         }
-      }
-   }
    
 /*fn addInventory(~player: player, ~block: block) {
 
