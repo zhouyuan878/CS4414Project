@@ -27,24 +27,30 @@ struct player {
    mut defense: int,
    mut hand: block,
    mut xPos: int,
-   mut yPos: int
+   mut yPos: int,
+   mut xDir: int,
+   mut yDir: int
 
    //mut invSize: int,
    //mut inv: blockInfo[]//not sure if this is correct syntax for declaring a variable size array- or if that's possible without simply destroying the old one and replacing it.
 }
 
-fn eat(~player: player, ~player.hand: block) {
-   match block.color {
+fn eat(~player: player) {
+   match player.block.color {
       ~'r' => {player.attack += 1}
       ~'b' => {player.defense += 1}
       ~'g' => {player.health += 1}
       _    => {println("Fingers aren't tasty")}
    }
-   block = 'n';
+   block.color = 'n';
 }
 
-fn take(~player: player, ~player.hand: block) {
-   if block
+fn take(~player: player) {
+   if (player.block.color != 'n') { println("Don't get greedy"); }
+   else {
+      player.block = checkForBlock(xPos+xDir,yPos+yDir);
+   }
+   
 }
 
 fn addInventory(~player: player, ~block: block) {
