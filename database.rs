@@ -89,8 +89,6 @@ impl player {
    fn mix(self, second: block) {
       newblock: block = mix_block(self.block, second);
       self.block.color = newblock.color;
-      self.block.xPos = newblock.xPos;
-      self.block.yPos = newblock.yPos;
       }
       
       
