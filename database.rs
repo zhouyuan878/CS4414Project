@@ -25,9 +25,6 @@ struct block {
 }
 
 struct player {
-   mut red: int,
-   mut green: int,
-   mut blue: int,
    mut health: int,
    mut attack: int,
    mut defense: int,
@@ -44,14 +41,13 @@ struct player {
 impl player {
    
    fn new -> player {
-      red: 1,
-      green: 1,
-      blue: 1,
       health: 1,
       attack: 1,
       defense: 1,
       xPos: 0,
       yPos: 0,
+      xDir: 0,
+      yDir: 0
    }
    
    fn eat(self) {
@@ -70,8 +66,22 @@ impl player {
          self.block = checkForBlock(xPos+xDir,yPos+yDir);
       }
    }
+   
+   fn drop(self) {
+      if (self.block.color == 'n') { println("Don't get greedy"); }
+      else {
+         emptyBlock = checkForBlock(xPos+xDir,yPos+yDir);
+         if (emptyBlock.color == 'n') {
+            //clear block in hand, add block to world
+         }
+      }
+   }
 }
 
+   fn checkForBlock(xPos,yPos) -> block {
+      
+   }
+   
 /*fn addInventory(~player: player, ~block: block) {
 
 }
