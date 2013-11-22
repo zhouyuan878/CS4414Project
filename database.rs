@@ -33,9 +33,15 @@ struct player {
    //mut inv: blockInfo[]//not sure if this is correct syntax for declaring a variable size array- or if that's possible without simply destroying the old one and replacing it.
 }
 
-fn eat(
+fn eat(~player: player, ~block: block) {
+   match block.color {
+      ~'r' => {player.attack += 1}
+      ~'b' => {player.defense += 1}
+      ~'g' => {player.health += 1}
+   }
+}
 
-fn addInventory(~player: playerRGB, ~block: blockInfo) {
+fn addInventory(~player: player, ~block: block) {
 
 }
 
