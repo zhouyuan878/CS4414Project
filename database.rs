@@ -11,8 +11,8 @@ struct object {
 }
 
 struct map {
-   mut field: bool[bool[]]
-   mut ~coordinates: object[object[]]
+   mut field: int[int[]]
+   //mut ~coordinates: object[object[]]
    size: int,//it may be simpler to just fold this whole thing into Rust's native vector type, let it figure out when to get bigger
    capacity: float
 }
@@ -34,23 +34,50 @@ impl map {
 }
 
 struct block {
-   color: char,
-   mut xPos: int,
-   mut yPos: int
+   mut source: int[] = [0,0,0];
+   mut key: int;
    //need to represent eat, destroy, etc. as functions, blockInfo needs to be able to get them
 }
 
 impl block {
    fn new(new_color: str)-> block {
-     block {
-       color: new_color,
-       xPos: 0,
-       yPos: 0,
+      if (new_color == "red") {
+         source[0] = 10;
+         key = 1;
       }
-    }
+      if (str == "green") {
+         source[1] = 10;
+         key = 2;
+      }
+      if (str == "blue") {
+         source[2] = 10;
+         key = 3;
+      }
+      if (str == "yellow") {
+         source[0] = 10;
+         source[1] = 10;
+         key = 4;
+      }
+      if (str == "purple") {
+         source[0] = 10;
+         source[2] = 10;
+         key = 5;
+      }
+      if (str == "cyan") {
+         source[1] = 10;
+         source[2] = 10;
+         key = 6;
+      }
+      if (str == "white") {
+         source[0] = 10;
+         source[1] = 10;
+         source[2] = 10;
+         key = 7;
+      }
+   }
 
    fn mix_block(first: block, second: block) -> block {
-     if (first.color == "red") && (second.color == "green") {return new("yellow");}
+     /*if (first.color == "red") && (second.color == "green") {return new("yellow");}
      else if (first.color == "red") && (second.color == "blue") {return new("magenta");}
      else if (first.color == "green") && (second.color == "blue") {return new("cyan");}
      else if (first.color == "yellow") && (second.color == "magenta") {return new("white");}
@@ -58,13 +85,16 @@ impl block {
      else if (first.color == "magenta") && (second.color == "cyan") {return new("white");}
      else if (first.color == "white") {return new(second.color);}
      else if (second.color == "white") {return new(first.color);}
-     else {return first}
+     else {return first}*/
+     
+     tmpBlock = 
      }
     }
 }
 
 struct player {
    mut health: int,
+   mut hunger: int,
    mut attack: int,
    mut defense: int,
    mut hand: block,
