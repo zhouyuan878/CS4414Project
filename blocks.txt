@@ -1,50 +1,57 @@
-Basic interactions are categorized as "aggresive (red)", "cooperative (green)", or "passive (blue)". Different scenarios create different effects. Colors can mix to create blocks, blocks can also mix to create blocks. Below are the basic types of blocks, and some of their characteristics.
+Basic interactions are categorized as "aggresive (red)", "passive (green)", or "cooperative (blue)". Different scenarios create different effects. Colors can mix to create blocks, blocks can also mix to create blocks. Below are the basic types of blocks, and some of their characteristics.
 
 Red-
-source - red+red
+key- 1
+source - [10, 0, 0]
 eat- +1 attack
 destroy- 3 damage to adjacent objects
 take- -1 health
 drop- immobile for 10 seconds
 
 Green-
-source - green+green
+key- 2
+source - [0, 10, 0]
 eat- +1 health
 destroy- -1 attack, +1 health to adjacent objects
 take- -1 attack
-drop- -1 inventory
+drop- can't take for one minute
 
 Blue-
-source - blue+blue
+key- 3
+source - [0, 0, 10]
 eat- +1 defense
-destroy- +1 defense
-take- talk diabled for 10 seconds
-drop- 
+destroy- +2 defense, -1 attack
+take- talk disabled for 10 seconds
+drop- hunger speed doubled for 30 seconds
 
 Yellow-
-source - red+green
-eat- 
-destroy-
-take-
-drop-
+key- 4
+source - [10, 10, 0]
+eat- +1 attack, for 30 seconds, attacks deal -1 defense to target
+destroy- carnivore bonus doubled for 5 minutes
+take- cannot eat green blocks until put down
+drop- -2 health
 
-Magenta-
-source - red+blue 
-eat-
-destroy-
-take-
-drop-
+Purple-
+key- 5
+source - [10, 0, 10]
+eat- teleport a friend to your side (input id)
+destroy- teleport target to random position (input location or id)
+take- hunger speed doubled while held on, +1 attack, +1 defense every ten seconds, defense effective 1/2
+drop- teleport to random location
 
 Cyan-
-source - green+blue 
-eat-
-destroy-
-take-
+key- 6
+source - [0, 10, 10]
+eat- defense*2 for 30 seconds, attackers take -1 attack each attempt during time
+destroy- display random command (a la 'help')
+take- 
 drop-
 
 White-
-source - magenta+cyan / yellow+cyan / yellow+magenta
-eat-
-destroy-
-take-
-drop-
+key- 7
+source - [10, 10, 10]
+eat- +player.rgb[0] attack, +player.rgb[1] health, +player.rgb[2] defense
+destroy- invulnerable for 10 seconds, create 1 red, 1 green, 1 blue adjacent
+take- inventory counts as full, get 5 second buffer to all aggressive actions (5 seconds extra to attack, to respond, etc.)
+drop- steal inventory of adjacent player (full addition)
