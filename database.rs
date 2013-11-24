@@ -41,6 +41,9 @@ struct block {
 
 impl block {
    fn new(new_color: str)-> block {
+      if (new_color == "new") {
+      }
+   
       if (new_color == "red") {
          source[0] = 10;
          key = 1;
