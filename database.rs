@@ -3,7 +3,7 @@
 
 use std::*
 
-static mut worldRGB: int[] = [0, 0, 0];
+static mut worldRGB: [int] = [0, 0, 0];
 
 struct object {
    c_block: block,
@@ -34,9 +34,8 @@ impl map {
 }
 
 struct block {
-   mut source: int[] = [0,0,0];
-   mut key: int;
-   //need to represent eat, destroy, etc. as functions, blockInfo needs to be able to get them
+   mut source: [int] = [0,0,0],
+   mut key: int
 }
 
 impl block {
@@ -48,30 +47,30 @@ impl block {
          source[0] = 10;
          key = 1;
       }
-      if (str == "green") {
+      if (new_color == "green") {
          source[1] = 10;
          key = 2;
       }
-      if (str == "blue") {
+      if (new_color == "blue") {
          source[2] = 10;
          key = 3;
       }
-      if (str == "yellow") {
+      if (new_color == "yellow") {
          source[0] = 10;
          source[1] = 10;
          key = 4;
       }
-      if (str == "purple") {
+      if (new_color == "purple") {
          source[0] = 10;
          source[2] = 10;
          key = 5;
       }
-      if (str == "cyan") {
+      if (new_color == "cyan") {
          source[1] = 10;
          source[2] = 10;
          key = 6;
       }
-      if (str == "white") {
+      if (new_color == "white") {
          source[0] = 10;
          source[1] = 10;
          source[2] = 10;
@@ -116,6 +115,7 @@ impl player {
       health: 1,
       attack: 1,
       defense: 1,
+      hunger: 1,
       xPos: 0,
       yPos: 0,
       xDir: 0,
@@ -155,6 +155,11 @@ impl player {
          }
       }
    }
+   
+   fn move(self) {
+    
+}
+
 }
    
 /*fn addInventory(~player: player, ~block: block) {
