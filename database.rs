@@ -163,8 +163,17 @@ impl player {
    }
    
    fn move(self, direction: str) {
-     if 
-    
+     WorldMap[currentPosX][currentPosY] = 0;
+     
+     if (direction == north) {currentPosY += 1;}
+     if (direction == south) {currentPosY -= 1;}
+     if (direction == west) {currentPosX -= 1;}
+     if (direction == east) {currentPosX += 1;}
+     
+     if (WorldMap[currentPosX][currentPosY] == 0) {
+     WorldMap[currentPosX][currentPosY] = 10;
+     }
+     
 }
 
 }
