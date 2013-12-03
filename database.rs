@@ -3,24 +3,30 @@
 
 use std::*
 
-static mut worldRGB: [int] = [0, 0, 0];
+mut worldRGB: [int] = [0, 0, 0];
+
+mut currentPosX: int;
+mut currentPosY: int;
 
 struct object {
    c_block: block,
    c_player: player
 }
 
+mut WorldMap: [[int, ..100], ..100];
+
 struct map {
-   mut field: int[int[]]
-   //mut ~coordinates: object[object[]]
-   size: int,//it may be simpler to just fold this whole thing into Rust's native vector type, let it figure out when to get bigger
-   capacity: float
+   field: [[int, ..200], ..200]
+  // size: int,//it may be simpler to just fold this whole thing into Rust's native vector type, let it figure out when to get bigger
+   //capacity: float
 }
 
 impl map {
    fn new -> map {
       
    }
+   
+  
    
    fn checkForBlock(xPos,yPos) -> block {
       if (map.field[xPos,yPos] != null) {
@@ -156,7 +162,8 @@ impl player {
       }
    }
    
-   fn move(self) {
+   fn move(self, direction: str) {
+     if 
     
 }
 
