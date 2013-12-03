@@ -174,7 +174,13 @@ impl player {
      WorldMap[currentPosX][currentPosY] = 10;
      }
      
-}
+     else {
+     print("the position is already occupied");
+     }
+   }
+   
+   fn look(self, direction: str) {
+     
 
 }
    
