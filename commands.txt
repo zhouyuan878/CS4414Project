@@ -13,7 +13,7 @@ follow- takes a player id, and optionally a distance. The player following then 
 Human-World:
 move- takes a string or a pair of ints (-1 to 1). The player's position is incremented by the appropriate amount.
 
-turn- takes a string or a pair of ints (-1 to 1). The player's current direction is set to the appropriate value.
+//turn- takes a string or a pair of ints (-1 to 1). The player's current direction is set to the appropriate value.
 
 look- takes an optional string or pair of ints (-1 to 1). Outputs the contents of cells, with their relative positions, within a cone, 5 cells deep, centered on the target square.
 
