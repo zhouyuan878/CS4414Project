@@ -1,6 +1,5 @@
 
 
-
 mod database;
 
 
@@ -35,7 +34,7 @@ fn check_command(command: ~[~str]) {
 fn handle_command(cmd: ~[~str]) {
         let command: ~str = cmd[0]; 
         if !allowed_command(command){
-           print("command not allowed!");
+           //(redundant) print("command not allowed!");
            return;
 }
        else {
@@ -50,16 +49,16 @@ fn handle_command(cmd: ~[~str]) {
 
 fn main() {
 
- static CMD_PROMPT: &'static str = "Enter your command:";
+        static CMD_PROMPT: &'static str = "Enter your command:";
         
         
- loop {        
-  print(CMD_PROMPT);
-  let command = io::stdin().read_line();
+        loop {        
+                print(CMD_PROMPT);
+                let command = io::stdin().read_line();
   
-  handle_command(command);
-  }
-  }
+                handle_command(command);
+        }
+}
   
   
  
