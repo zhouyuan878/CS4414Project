@@ -18,14 +18,14 @@ fn allowed_direction(dir: ~str) -> bool {
 //get and print the object at a specific coordinate
 fn print_object(input: int) {
 	match input {
-		1 => {println("Red");}
-		2 => {println("Green");}
-		3 => {println("Blue");}
-		4 => {println("Yellow");}
-		5 => {println("Purple");}
-		6 => {println("Cyan");}
-		7 => {println("White");}
-		_ => {println("There is nothing there...");}
+		1 => {println("Red"); }
+		2 => {println("Green"); }
+		3 => {println("Blue"); }
+		4 => {println("Yellow"); }
+		5 => {println("Purple"); }
+		6 => {println("Cyan"); }
+		7 => {println("White"); }
+		_ => {println("There is nothing there..."); }
 	}
 }
 
@@ -41,7 +41,7 @@ fn main() {
 	let mut PosY: int = 1;
   
 	let mut object_int: int = 0;
-	let mut inventory: [int] = [int, ..5];
+	let mut inventory: ~[int] = ~[];
 
 	println("Welcome to the world of mystery!");
         
@@ -94,7 +94,7 @@ fn main() {
 				}
 						  
 				~"look" => {
-					if (cmd_vec.len() == 0) {println("Please specify the direction you are moving!");}
+					if (cmd_vec.len() == 0) {println("Please specify the direction you are looking!");}
 					else {
 						let dir = cmd_vec.remove(0);
 						if !(allowed_direction(dir.clone())) {
@@ -111,20 +111,83 @@ fn main() {
 								object_int = WorldMap[PosX - 1][PosY]
 							}
 							if (dir == ~"east") {
-								object_int = WorldMap[PosX + 1][PosY + 1]
+								object_int = WorldMap[PosX + 1][PosY]
 							}
 							
 							print_object(object_int);
 						}
-					}
+					}						
 				}
 							
 				~"inventory" => {
-					for(val in inventory) {
-						print_object(val);
+					let mut i = 0;
+					let mut counter: int = 0;
+					while i < inventory.len() {
+						print_object(counter);
+						counter += 1;
+						i += 1;
 					}
 				}
 				
+
+				~"take" => {
+					if (cmd_vec.len() == 0) {println("Please the quadrant you wish to pick a block from!");}
+					else {
+						let dir = cmd_vec.remove(0);
+						if !(allowed_direction(dir.clone())) {
+							print("Look direction is invalid!");
+						}
+						else {
+							if (dir == ~"north") {
+								object_int = WorldMap[PosX][PosY + 1];
+								if (object_int < 8 && object_int > 0) {
+									inventory.push(object_int);
+									WorldMap[PosX][PosY + 1] = 0;
+								}
+								else { println("No block at location"); }
+							}
+                            				if (dir == ~"south") {
+								object_int = WorldMap[PosX][PosY - 1];
+								if (object_int < 8 && object_int > 0) {
+									inventory.push(object_int);
+									WorldMap[PosX][PosY - 1] = 0;
+								}
+								else { println("No block at location"); }
+							}
+							if (dir == ~"west") {
+								object_int = WorldMap[PosX + 1][PosY];
+								if (object_int < 8 && object_int > 0) {
+									inventory.push(object_int);
+									WorldMap[PosX + 1][PosY] = 0;
+								}
+								else { println("No block at location"); }
+							}
+							if (dir == ~"east") {
+								object_int = WorldMap[PosX - 1][PosY];
+								if (object_int < 8 && object_int > 0) {
+									inventory.push(object_int);
+									WorldMap[PosX - 1][PosY] = 0;
+								}
+								else { println("No block at location"); }
+							}
+						}
+					}
+				}
+
+
+
+				~"drop" => {
+					
+				}
+
+				~"eat" => {
+					
+				}
+
+				~"mix" => {
+					
+				}
+
 				_        =>  {println("We don't recognize your command...");}
 			}
 		}
@@ -135,7 +198,6 @@ fn main() {
   
   
   
-
 
 
 
