@@ -15,6 +15,23 @@ fn allowed_direction(dir: ~str) -> bool {
         else {return false;}
 }
 
+fn checkForBlock(dir: ~str) -> int {
+	if(dir.equals("north")) {
+		object_int = WorldMap[PosX][PosY + 1];
+		objX = PosX;
+		objY = PosY + 1;		
+	}
+	if(dir.equals("south")) {
+		object_int = WorldMap[PosX][PosY - 1];
+	}
+	if(dir.equals("west")) {
+		object_int = WorldMap[PosX + 1][PosY];
+	}
+	if(dir.equals("east")) {
+		object_int = WorldMap[PosX + 1][PosY];
+	}
+}
+
 //get and print the object at a specific coordinate
 fn print_object(input: int) {
 	match input {
@@ -180,8 +197,6 @@ fn main() {
 			}
 		}
 	}
-
-
 }
 						  
 			  
