@@ -18,8 +18,13 @@ fn allowed_direction(dir: ~str) -> bool {
 //get and print the object at a specific coordinate
 fn print_object(input: int) {
 	match input {
-		1 => {println("Gold spotted!");}
-		2 => {println(" ");}
+		1 => {println("Red");}
+		2 => {println("Green");}
+		3 => {println("Blue");}
+		4 => {println("Yellow");}
+		5 => {println("Purple");}
+		6 => {println("Cyan");}
+		7 => {println("White");}
 		_ => {println("There is nothing there...");}
 	}
 }
@@ -36,6 +41,7 @@ fn main() {
 	let mut PosY: int = 1;
   
 	let mut object_int: int = 0;
+	let mut inventory: [int] = [int, ..5];
 
 	println("Welcome to the world of mystery!");
         
@@ -113,7 +119,11 @@ fn main() {
 					}
 				}
 							
-						  
+				~"inventory" => {
+					for(val in inventory) {
+						print_object(val);
+					}
+				
 				_        =>  {println("We don't recognize your command...");}
 			}
 		}
