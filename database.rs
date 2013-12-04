@@ -1,47 +1,70 @@
 //Need: world-tracking rgb, player db (connection info, rgb, attributes, position), map db (size, capacity, active positions), block info db (makeup, eat, destroy, take, drop), command db (function library for all commands)
 
 
-use std::*
+use std::*;
 
-mut worldRGB: [int] = [0, 0, 0];
-
-mut currentPosX: int;
-mut currentPosY: int;
+//mut currentPosX: int;
+//mut currentPosY: int;
 
 struct object {
    c_block: block,
    c_player: player
 }
 
-mut WorldMap: [[int, ..100], ..100];
-
-struct map {
-   field: [[int, ..200], ..200]
-  // size: int,//it may be simpler to just fold this whole thing into Rust's native vector type, let it figure out when to get bigger
-   //capacity: float
+struct WorldData {
+   field: [[int]],
+   rgb: [int],
+   players: [player]
 }
 
-impl map {
-   fn new -> map {
-      
+impl WorldData {
+   fn new() -> WorldData {
+      field = [[0]];//how do we declare all positions equal 0?
+      rgb = [0, 0, 0];
+      players = [0];//again, how do we fill this with 0's?
    }
    
   
    
-   fn checkForBlock(xPos,yPos) -> block {
-      if (map.field[xPos,yPos] != null) {
-         Object tmp = map.coordinates[xPos,yPos];
+   fn checkForBlock(self, xPos: int, yPos: int) -> block {
+      if (self.field[xPos][yPos] != null) {
+         let tmp: object = map.coordinates[xPos][yPos];//this won't be an object, it will be an int
          match tmp {
-            Block(tmp) => return tmp;
+            block(tmp) => {return tmp;}
             
          }
       }
    }
+   
+   fn generate(self) {//call each time the counter increments- eventually refine to speed, narrow search?
+      let mut xPos: int = 0;
+      let mut yPos: int = 0;
+      if (self.rgb[0] == 10) {
+ 	 while (self.field[xPos][yPos] != 0) {
+	    xPos = Rand();
+	    yPos = Rand();
+	 }
+	 self.field[xPos][yPos] = 1;
+      } else if (self.rgb[1] == 10) {
+         while (self.field[xPos][yPos] != 0) {
+	    xPos = Rand();
+	    yPos = Rand();
+	 }
+	 self.field[xPos][yPos] = 2;
+      } else if (self.rgb[2] == 10) {
+         while (self.field[xPos][yPos] != 0) {
+	    xPos = Rand();
+	    yPos = Rand();
+	 }
+	 WorldData.field[xPos][yPos] = 3;
+      } else {break}
+   }
 }
 
 struct block {
-   mut source: [int] = [0,0,0],
-   mut key: int
+   source: [int],
+   key: int, 
+   name: ~str
 }
 
 impl block {
@@ -95,93 +118,127 @@ impl block {
      else if (second.color == "white") {return new(first.color);}
      else {return first}*/
      
-     tmpBlock = 
-     }
-    }
+     //tmpBlock = 
+   }
+   
+   fn checkName(name: ~str) -> int {
+      if (self.name == "red") { return 1 }
+      else if (self.name == "blue") { return 2 }
+      else if (self.name == "green") { return 3 }
+      else if (self.name == "yellow") { return 4 }
+      else if (self.name == "cyan") { return 5 }
+      else if (self.name == "purple") { return 6 }
+      else if (self.name == "white") { return 7 }
+      else { return 0 }
+   }
 }
 
 struct player {
-   mut health: int,
-   mut hunger: int,
-   mut attack: int,
-   mut defense: int,
-   mut hand: block,
-   mut xPos: int,
-   mut yPos: int,
-   mut xDir: int,
-   mut yDir: int
+   id: int,
+   health: int,
+   hunger: int,
+   attack: int,
+   defense: int,
+   hand: block,
+   xPos: int,
+   yPos: int,
+   xDir: int,
+   yDir: int,
+   effects: [int]
 
    //mut invSize: int,
-   //mut inv: blockInfo[]//not sure if this is correct syntax for declaring a variable size array- or if that's possible without simply destroying the old one and replacing it.
+   //mut inv: [int, ...10]//not sure if this is correct syntax for declaring a variable size array- or if that's possible without simply destroying the old one and replacing it.
 }
 
 impl player {
    
-   fn new -> player {
-      health: 1,
-      attack: 1,
-      defense: 1,
-      hunger: 1,
-      xPos: 0,
-      yPos: 0,
-      xDir: 0,
-      yDir: 0
+   fn new(World: WorldData) -> player {
+      id = {while (World.players[id] != 0) {id += 1}}; //or something along those lines
+      health = 1;
+      attack = 1;
+      defense = 1;
+      hunger = 1;
+      xPos = 0;
+      yPos = 0;
+      xDir = 0;
+      yDir = 0;
+      effects = [0];
    }
    
    fn eat(self) {
-      match self.block.color {
-         ~'r' => {self.attack += 1}
-         ~'b' => {self.defense += 1}
-         ~'g' => {self.health += 1}
+      let target = checkForBlock((self.xPos+self.xDir), (self.yPos+self.yDir));
+      match  target.key {
+         ~1 => {self.attack += 1}
+         ~2 => {self.defense += 1}
+         ~3 => {self.health += 1}
+	 ~4 => {self.attack += 1
+		}//need to implement timer to round this out
          _    => {println("Fingers aren't tasty")}
       }
       block.color = 'n';
    }
 
-   fn mix(self, second: block) {
-      newblock: block = mix_block(self.block, second);
-      self.block.color = newblock.color;
-      self.block.xPos = newblock.xPos;
-      self.block.yPos = newblock.yPos;
+   fn mix(self, first: block, second: block) {
+      let newblock: block = mix_block(first, second);
+      let i = 0;
+      while (self.inventory[i] != 0) {
+         i += 1;
       }
+      self.inventory[i] = block.key;
+   }
 
    fn take(self) {
-      if (self.block.color != 'n') { println("Don't get greedy"); }
+      let target = checkForBlock((self.xPos+self.xDir), (self.yPos+self.yDir);
+      if (self.inventory[9] != 0) {println("Don't get greedy!");}
       else {
-         self.block = checkForBlock(xPos+xDir,yPos+yDir);
+         while (self.inventory[i] != 0) {
+         i += 1;
+         }
+      self.inventory[i] = block.key;
       }
    }
    
-   fn drop(self) {
-      if (self.block.color == 'n') { println("Don't get greedy"); }
-      else {
-         emptyBlock = checkForBlock(xPos+xDir,yPos+yDir);
-         if (emptyBlock.color == 'n') {
-            //clear block in hand, add block to world
+   fn throw(self, block: ~str) {
+      let mut i = 0;
+      let mut thisKey = checkName(block);
+      let mut possible: bool = false;
+      let mut invPos: int = 0;
+      while (i < 10) {
+         if (self.inventory[i] == thisKey) {
+            possible = true;
+    	    invPos = i;
          }
+      }
+      if (possible == false) { println("Throw what? Dumbass."); }
+      else {
+         self.inventory[invPos] = 0;
+    	 //match for effects goes here
       }
    }
    
    fn move(self, direction: str) {
-     WorldMap[currentPosX][currentPosY] = 0;
+     let tempX = xPos;
+     let tempY = yPos;
      
-     if (direction == north) {currentPosY += 1;}
-     if (direction == south) {currentPosY -= 1;}
-     if (direction == west) {currentPosX -= 1;}
-     if (direction == east) {currentPosX += 1;}
+     if (direction == "north") {self.yPos += 1;}
+     if (direction == "south") {self.yPos -= 1;}
+     if (direction == "west") {self.yPos -= 1;}
+     if (direction == "east") {self.yPos += 1;}
      
-     if (WorldMap[currentPosX][currentPosY] == 0) {
-     WorldMap[currentPosX][currentPosY] = 10;
+     if (World[self.xPos][self.yPos] == 0) {
+        World[self.xPos][self.yPos] = self.id;
      }
      
      else {
-     print("the position is already occupied");
+        self.xPos = tempX;
+        self.yPos = tempY;
+        print("the position is already occupied");
      }
    }
    
    fn look(self, direction: str) {
      
-
+   }
 }
    
 /*fn addInventory(~player: player, ~block: block) {

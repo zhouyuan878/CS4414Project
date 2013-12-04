@@ -10,3 +10,7 @@ fn updateWorld(args: command) {
 fn updatePlayer(args: command, player) {
 //matches the command and make the appropriate update to the player
 }
+
+fn timer() {
+   
+}
