@@ -123,6 +123,7 @@ fn main() {
 					for(val in inventory) {
 						print_object(val);
 					}
+				}
 				
 				_        =>  {println("We don't recognize your command...");}
 			}
