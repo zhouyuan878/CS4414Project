@@ -1,4 +1,6 @@
 use std::{io, run, os, path, libc};
+use std::rand;
+use std::rand::Rng;
 
 
 //check if command is allowed
@@ -36,11 +38,6 @@ fn checkForBlock(dir: ~str, inVec: [[int, ..100], ..100], x: int, y: int) -> int
 		
 }
 
-
-
-
-
-
 //get and print the object at a specific coordinate
 fn print_object(input: int) {
         match input {
@@ -66,6 +63,9 @@ fn main() {
 		WorldMap[1][1] = 4;
 		WorldMap[2][2] = 5;
 
+        let mut rgb = [0, 0, 0];
+	let mut timer = 0;
+
         let mut PosX: int = 1;
         let mut PosY: int = 1;
 
@@ -76,9 +76,28 @@ fn main() {
         let mut inventory: ~[int] = ~[];
 
         println("Welcome to the world of mystery!");
-        
-        
-        loop {        
+
+        loop {  
+		if (timer == 3) {
+			let mut rng = rand::task_rng();
+			let mut xPos: int = rng.gen_integer_range(0, 101);
+			let mut yPos: int = rng.gen_integer_range(0, 101);
+
+      			if (rgb[0] == 10) {
+	 			WorldMap[xPos][yPos] = 1;
+      				} 
+			else if (rgb[1] == 10) {
+				WorldMap[xPos][yPos] = 2;
+      			} 
+			else if (rgb[2] == 10) {
+	 			WorldMap[xPos][yPos] = 3;
+      			} 
+			else {
+				break
+			}		
+		}
+	} 
+
                 println(CMD_PROMPT);
 
                 let mut cmd_line = io::stdin().read_line();
@@ -183,20 +202,9 @@ fn main() {
 
 
                                 ~"drop" => {
-								   if (inventory.len() == 0) {
-								     println("Your inventory is currently empty!");
-									}
-								   else {
-								     let obj_drop: int = inventory.remove(0);
-									 
-									 if (WorldMap[PosX+1][PosY] == 0) {WorldMap[PosX+1][PosY] = obj_drop;}
-									 else if (WorldMap[PosX-1][PosY] == 0) {WorldMap[PosX-1][PosY] = obj_drop;}
-									 else if (WorldMap[PosX][PosY+1] == 0) {WorldMap[PosX][PosY+1] = obj_drop;}
-									 else if (WorldMap[PosX][PosY-1] == 0) {WorldMap[PosX][PosY-1] = obj_drop;}
-								     else {print("There is no place for you to drop your item!");}
+								  
                                         
                                 }
-								}
 
                                 ~"eat" => {
                                         
@@ -226,4 +234,3 @@ fn main() {
   
   
   
-
