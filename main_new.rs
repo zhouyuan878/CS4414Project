@@ -17,7 +17,7 @@ fn allowed_direction(dir: ~str) -> bool {
         else {return false;}
 }
 
-fn checkForBlock(dir: ~str, inVec: [[int, ..100], ..100], x: int, y: int) -> int {
+fn checkForBlock(dir: ~str, inVec: [[int, ..4], ..4], x: int, y: int) -> int {
         
         let mut object_int: int = 0;
 
@@ -58,12 +58,12 @@ fn main() {
   
         static CMD_PROMPT: &'static str = "Enter your command:";
 
-        let mut WorldMap: [[int, ..100], ..100] = [[0, ..100], ..100];
+        let mut WorldMap: [[int, ..4], ..4] = [[0, ..4], ..4];
 		
-		WorldMap[1][1] = 4;
-		WorldMap[2][2] = 5;
+		//WorldMap[1][1] = 4;
+		//WorldMap[2][2] = 5;
 
-        let mut rgb = [0, 0, 0];
+        let mut rgb = [10, 0, 0];
 	let mut timer = 0;
 
         let mut PosX: int = 1;
@@ -78,10 +78,10 @@ fn main() {
         println("Welcome to the world of mystery!");
 
         loop {  
-		if (timer == 3) {
+		if (timer == 1) {
 			let mut rng = rand::task_rng();
-			let mut xPos: int = rng.gen_integer_range(0, 101);
-			let mut yPos: int = rng.gen_integer_range(0, 101);
+			let mut xPos: int = rng.gen_integer_range(0, 2);
+			let mut yPos: int = rng.gen_integer_range(0, 2);
 
       			if (rgb[0] == 10) {
 	 			WorldMap[xPos][yPos] = 1;
@@ -92,11 +92,8 @@ fn main() {
 			else if (rgb[2] == 10) {
 	 			WorldMap[xPos][yPos] = 3;
       			} 
-			else {
-				break
-			}		
+		
 		}
-	} 
 
                 println(CMD_PROMPT);
 
@@ -227,6 +224,7 @@ fn main() {
                                 _        =>  {println("We don't recognize your command...");}
                         }
                 }
+	timer += 1;
         }
 }
                                                   
