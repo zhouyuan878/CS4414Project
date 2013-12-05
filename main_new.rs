@@ -202,6 +202,19 @@ fn main() {
 
 
                                 ~"drop" => {
+                                  if (inventory.len() == 0) {
+								     println("Your inventory is currently empty!");
+									}
+								   else {
+								     let obj_drop: int = inventory.remove(0);
+									 
+									 if (WorldMap[PosX+1][PosY] == 0) {WorldMap[PosX+1][PosY] = obj_drop;}
+									 else if (WorldMap[PosX-1][PosY] == 0) {WorldMap[PosX-1][PosY] = obj_drop;}
+									 else if (WorldMap[PosX][PosY+1] == 0) {WorldMap[PosX][PosY+1] = obj_drop;}
+									 else if (WorldMap[PosX][PosY-1] == 0) {WorldMap[PosX][PosY-1] = obj_drop;}
+								     else {print("There is no place for you to drop your item!");}
+                                        
+                                }
 								  
                                         
                                 }
