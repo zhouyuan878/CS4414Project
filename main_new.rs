@@ -17,7 +17,7 @@ fn allowed_direction(dir: ~str) -> bool {
         else {return false;}
 }
 
-fn checkForBlock(dir: ~str, inVec: [[int, ..4], ..4], x: int, y: int) -> int {
+fn checkForBlock(dir: ~str, inVec: [[int, ..100], ..100], x: int, y: int) -> int {
         
         let mut object_int: int = 0;
 
@@ -58,7 +58,7 @@ fn main() {
   
         static CMD_PROMPT: &'static str = "Enter your command:";
 
-        let mut WorldMap: [[int, ..4], ..4] = [[0, ..4], ..4];
+        let mut WorldMap: [[int, ..100], ..100] = [[0, ..100], ..100];
 		
 		//WorldMap[1][1] = 4;
 		//WorldMap[2][2] = 5;
@@ -85,14 +85,17 @@ fn main() {
 
       			if (rgb[0] == 10) {
 	 			WorldMap[xPos][yPos] = 1;
+	 			rbg[0] = 0;
       				} 
 			else if (rgb[1] == 10) {
 				WorldMap[xPos][yPos] = 2;
+				rbg[1] = 0;
       			} 
 			else if (rgb[2] == 10) {
 	 			WorldMap[xPos][yPos] = 3;
+	 			rbg[2] = 0;
       			} 
-		
+			timer = 0;
 		}
 
                 println(CMD_PROMPT);
