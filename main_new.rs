@@ -154,7 +154,7 @@ fn main() {
                                                 if !(allowed_direction(dir.clone())) {
                                                         print("Look direction is invalid!");
                                                 }
-                                                else 
+                                                else {
 												      if(dir == ~"north") {
 														object_int = WorldMap[PosX][PosY + 1];  
 														WorldMap[PosX][PosY + 1] = 0;
@@ -177,6 +177,7 @@ fn main() {
                                                         }
                                                 }
                                         }
+										}
                                 
 
 
