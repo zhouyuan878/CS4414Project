@@ -80,8 +80,8 @@ fn main() {
         loop {  
 		if (timer == 1) {
 			let mut rng = rand::task_rng();
-			let mut xPos: int = rng.gen_integer_range(0, 2);
-			let mut yPos: int = rng.gen_integer_range(0, 2);
+			let mut xPos: int = rng.gen_integer_range(1, 2);
+			let mut yPos: int = rng.gen_integer_range(2, 3);
 
       			if (rgb[0] == 10) {
 	 			WorldMap[xPos][yPos] = 1;
