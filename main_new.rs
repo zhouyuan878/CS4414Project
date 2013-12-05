@@ -3,7 +3,7 @@ use std::{io, run, os, path, libc};
 
 //check if command is allowed
 fn allowed_command(cmd: ~str) -> bool {
-        let allowed_cmdlist: ~[~str] = ~[~"mix", ~"eat", ~"take", ~"drop", ~"move", ~"look", ~"create"];
+        let allowed_cmdlist: ~[~str] = ~[~"mix", ~"eat", ~"take", ~"drop", ~"move", ~"look", ~"create", ~"inventory"];
         if allowed_cmdlist.contains(&cmd) {return true;}
         else {return false;}
 }
@@ -16,6 +16,7 @@ fn allowed_direction(dir: ~str) -> bool {
 }
 
 fn checkForBlock(dir: ~str, inVec: [[int, ..100], ..100], x: int, y: int) -> int {
+        
         let mut object_int: int = 0;
 
         if(dir == ~"north") {
@@ -32,7 +33,13 @@ fn checkForBlock(dir: ~str, inVec: [[int, ..100], ..100], x: int, y: int) -> int
         }
 		
 		return object_int;
+		
 }
+
+
+
+
+
 
 //get and print the object at a specific coordinate
 fn print_object(input: int) {
@@ -55,6 +62,9 @@ fn main() {
         static CMD_PROMPT: &'static str = "Enter your command:";
 
         let mut WorldMap: [[int, ..100], ..100] = [[0, ..100], ..100];
+		
+		WorldMap[1][1] = 4;
+		WorldMap[2][2] = 5;
 
         let mut PosX: int = 1;
         let mut PosY: int = 1;
@@ -122,33 +132,16 @@ fn main() {
                                                 if !(allowed_direction(dir.clone())) {
                                                         print("Look direction is invalid!");
                                                 }
-                                                /*else {
-                                                        if (dir == ~"north") {
-                                                                object_int = WorldMap[PosX][PosY + 1];
-                                                        }
-                                                            if (dir == ~"south") {
-                                                                object_int = WorldMap[PosX][PosY - 1]
-                                                        }
-                                                        if (dir == ~"west") {
-                                                                object_int = WorldMap[PosX - 1][PosY]
-                                                        }
-                                                        if (dir == ~"east") {
-                                                                object_int = WorldMap[PosX + 1][PosY]
-                                                        }
-                                                        
-                                                        print_object(object_int);
-                                                }*/
-
+												
                                                 else { print_object(checkForBlock(dir, WorldMap, PosX, PosY)); }
                                         }                                                
                                 }
                                                         
                                 ~"inventory" => {
                                         let mut i = 0;
-                                        let mut counter: int = 0;
+                                      
                                         while i < inventory.len() {
-                                                print_object(counter);
-                                                counter += 1;
+                                                print_object(inventory[i]);
                                                 i += 1;
                                         }
                                 }
@@ -161,19 +154,35 @@ fn main() {
                                                 if !(allowed_direction(dir.clone())) {
                                                         print("Look direction is invalid!");
                                                 }
-                                                else {
-                                                        object_int = checkForBlock(dir, WorldMap, PosX, PosY);
-                                                        if (object_int < 8 && object_int > 0) {
+                                                else 
+												      if(dir == ~"north") {
+														object_int = WorldMap[PosX][PosY + 1];  
+														WorldMap[PosX][PosY + 1] = 0;
+														}
+													  if(dir == ~"south") {
+														object_int = WorldMap[PosX][PosY - 1];
+														WorldMap[PosX][PosY - 1] = 0;
+													    }
+												      if(dir == ~"west") {
+														object_int = WorldMap[PosX - 1][PosY];
+														WorldMap[PosX - 1][PosY] = 0;
+														}
+												      if(dir == ~"east") {
+														object_int = WorldMap[PosX + 1][PosY];
+														WorldMap[PosX + 1][PosY] = 0;
+														}
+                                                        
+                                                        if (object_int < 8 && object_int > 0) {														           
                                                                         inventory.push(object_int);
-                                                                        WorldMap[objX][objY] = 0;
                                                         }
                                                 }
                                         }
-                                }
+                                
 
 
 
                                 ~"drop" => {
+								  
                                         
                                 }
 
