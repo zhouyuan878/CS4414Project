@@ -1,6 +1,4 @@
 use std::{io, run, os, path, libc};
-use std::rand;
-use std::rand::Rng;
 
 
 //check if command is allowed
@@ -38,6 +36,11 @@ fn checkForBlock(dir: ~str, inVec: [[int, ..100], ..100], x: int, y: int) -> int
 		
 }
 
+
+
+
+
+
 //get and print the object at a specific coordinate
 fn print_object(input: int) {
         match input {
@@ -60,11 +63,8 @@ fn main() {
 
         let mut WorldMap: [[int, ..100], ..100] = [[0, ..100], ..100];
 		
-		//WorldMap[1][1] = 4;
-		//WorldMap[2][2] = 5;
-
-        let mut rgb = [10, 0, 0];
-	let mut timer = 0;
+		WorldMap[1][1] = 4;
+		WorldMap[2][2] = 5;
 
         let mut PosX: int = 1;
         let mut PosY: int = 1;
@@ -76,28 +76,9 @@ fn main() {
         let mut inventory: ~[int] = ~[];
 
         println("Welcome to the world of mystery!");
-
-        loop {  
-		if (timer == 1) {
-			let mut rng = rand::task_rng();
-			let mut xPos: int = rng.gen_integer_range(1, 2);
-			let mut yPos: int = rng.gen_integer_range(2, 3);
-
-      			if (rgb[0] == 10) {
-	 			WorldMap[xPos][yPos] = 1;
-	 			rbg[0] = 0;
-      				} 
-			else if (rgb[1] == 10) {
-				WorldMap[xPos][yPos] = 2;
-				rbg[1] = 0;
-      			} 
-			else if (rgb[2] == 10) {
-	 			WorldMap[xPos][yPos] = 3;
-	 			rbg[2] = 0;
-      			} 
-			timer = 0;
-		}
-
+        
+        
+        loop {        
                 println(CMD_PROMPT);
 
                 let mut cmd_line = io::stdin().read_line();
@@ -202,7 +183,7 @@ fn main() {
 
 
                                 ~"drop" => {
-                                  if (inventory.len() == 0) {
+								   if (inventory.len() == 0) {
 								     println("Your inventory is currently empty!");
 									}
 								   else {
@@ -215,9 +196,7 @@ fn main() {
 								     else {print("There is no place for you to drop your item!");}
                                         
                                 }
-								  
-                                        
-                                }
+								}
 
                                 ~"eat" => {
                                         
@@ -240,7 +219,6 @@ fn main() {
                                 _        =>  {println("We don't recognize your command...");}
                         }
                 }
-	timer += 1;
         }
 }
                                                   
@@ -248,3 +226,4 @@ fn main() {
   
   
   
+
