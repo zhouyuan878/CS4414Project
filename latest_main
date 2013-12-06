@@ -55,17 +55,17 @@ fn checkForBlock(dir: ~str, inVec: [[int, ..100], ..100], x: int, y: int) -> int
 
 
 
-//get and print the object at a specific coordinate
-fn print_object(input: int) {
+//get the object at a specific coordinate
+fn print_object(input: int) -> ~str{
         match input {
-                1 => {println("Red"); }
-                2 => {println("Green"); }
-                3 => {println("Blue"); }
-                4 => {println("Yellow"); }
-                5 => {println("Purple"); }
-                6 => {println("Cyan"); }
-                7 => {println("White"); }
-                _ => {println("There is nothing there..."); }
+                1 => {return ~"Red"; }
+                2 => {return ~"Green"; }
+                3 => {return ~"Blue"; }
+                4 => {return ~"Yellow";}
+                5 => {return ~"Purple"; }
+                6 => {return ~"Cyan"; }
+                7 => {return ~"White"; }
+                _ => {return ~"There is nothing there...";}
         }
 }
 
@@ -110,9 +110,8 @@ fn main() {
                 let mut cmd_line = str::from_utf8(buf);
 				stream.write(cmd_line.as_bytes());
 				let mut cmd_vec: ~[~str] = cmd_line.split_iter(' ').filter_map(|x| if x != "" { Some(x.to_owned()) } else { None }).to_owned_vec();
-				
 				let main_command = cmd_vec.remove(0);
-stream.write(main_command.as_bytes());				
+                stream.write(main_command.as_bytes());				
                 buf = [0, ..500];				
 				
 				
@@ -130,24 +129,26 @@ stream.write(main_command.as_bytes());
                                                 let dir = cmd_vec.remove(0);
                                                 
                                                 if !(allowed_direction(dir.clone())) {
-                                                        println("Move direction is invalid!");
+                                                        stream.write("Move direction is invalid!".as_bytes());
                                                 }
                                                 
                                                 else {
                                                         WorldMap[PosX][PosY] = 0;
                                                          
                                                         if (dir == ~"north") {PosY += 1;}
-                                                            if (dir == ~"south") {PosY -= 1;}
+                                                        if (dir == ~"south") {PosY -= 1;}
                                                         if (dir == ~"west")  {PosX -= 1;}
                                                         if (dir == ~"east")  {PosX += 1;}
      
+	                         
                                                         if (WorldMap[PosX][PosY] == 0) {
                                                                 WorldMap[PosX][PosY] = 10;
-                                                                println(fmt!("Your current coordinate is: <%?,%?>", PosX, PosY));
+																let cstring: ~str = fmt!("Your current coordinate is: <%?,%?>", PosX, PosY);
+                                                                stream.write(cstring.as_bytes());
                                                         }
      
                                                         else {
-                                                                println("the position is already occupied");
+                                                                stream.write("the position is already occupied".as_bytes());
                                                              }
                                                    
                                                 }
@@ -156,14 +157,16 @@ stream.write(main_command.as_bytes());
                                 }
                                                   
                                 ~"look" => {
-                                        if (cmd_vec.len() == 0) {println("Please specify the direction you are looking!");}
+                                        if (cmd_vec.len() == 0) {stream.write("Please specify the direction you are looking!".as_bytes());}
                                         else {
                                                 let dir = cmd_vec.remove(0);
                                                 if !(allowed_direction(dir.clone())) {
-                                                        print("Look direction is invalid!");
+                                                        stream.write("Look direction is invalid!".as_bytes());
                                                 }
 												
-                                                else { print_object(checkForBlock(dir, WorldMap, PosX, PosY)); }
+                                                else { 
+												let pstring: ~str = print_object(checkForBlock(dir, WorldMap, PosX, PosY));
+												stream.write(pstring.as_bytes()); }
                                         }                                                
                                 }
                                                         
@@ -171,18 +174,19 @@ stream.write(main_command.as_bytes());
                                         let mut i = 0;
                                       
                                         while i < inventory.len() {
-                                                print_object(inventory[i]);
+										        let tstring: ~str = print_object(inventory[i]);
+                                                stream.write(tstring.as_bytes());
                                                 i += 1;
                                         }
                                 }
                                 
 
                                 ~"take" => {
-                                        if (cmd_vec.len() == 0) {println("Please the quadrant you wish to pick a block from!");}
+                                        if (cmd_vec.len() == 0) {stream.write("Please the quadrant you wish to pick a block from!".as_bytes());}
                                         else {
                                                 let dir = cmd_vec.remove(0);
                                                 if !(allowed_direction(dir.clone())) {
-                                                        print("Look direction is invalid!");
+                                                        stream.write("Look direction is invalid!".as_bytes());
                                                 }
                                                 else {
 												      if(dir == ~"north") {
@@ -214,7 +218,7 @@ stream.write(main_command.as_bytes());
 
                                 ~"drop" => {
 								   if (inventory.len() == 0) {
-								     println("Your inventory is currently empty!");
+								     stream.write("Your inventory is currently empty!".as_bytes());
 									}
 								   else {
 								     let obj_drop: int = inventory.remove(0);
@@ -223,7 +227,7 @@ stream.write(main_command.as_bytes());
 									 else if (WorldMap[PosX-1][PosY] == 0) {WorldMap[PosX-1][PosY] = obj_drop;}
 									 else if (WorldMap[PosX][PosY+1] == 0) {WorldMap[PosX][PosY+1] = obj_drop;}
 									 else if (WorldMap[PosX][PosY-1] == 0) {WorldMap[PosX][PosY-1] = obj_drop;}
-								     else {print("There is no place for you to drop your item!");}
+								     else {stream.write("There is no place for you to drop your item!".as_bytes());}
                                         
                                 }
 								}
@@ -233,11 +237,11 @@ stream.write(main_command.as_bytes());
                                 }
 
                                 ~"mix" => {
-                                        if (cmd_vec.len() == 0) {println("Please the quadrant you wish to pick a block from!");}
+                                        if (cmd_vec.len() == 0) {stream.write("Please the quadrant you wish to pick a block from!".as_bytes());}
                                         else {
                                                 let dir = cmd_vec.remove(0);
                                                 if !(allowed_direction(dir.clone())) {
-                                                        print("Look direction is invalid!");
+                                                        stream.write("Look direction is invalid!".as_bytes());
                                                 }
                                                 else {
                                                         let pblock: int = inventory[0];
@@ -246,7 +250,7 @@ stream.write(main_command.as_bytes());
                                         }
                                 }
 
-                                _        =>  {println("We don't recognize your command...");}
+                                _        =>  {stream.write("We don't recognize your command...".as_bytes());}
                         }
 						}
 				
