@@ -310,21 +310,110 @@ fn main() {
 
                                 ~"eat" => {
                                 	counter += 1;			
-       
+									
+									let pblock: int = inventory[0];
+									
+									if (pblock == 0) {
+										stream.write("Fingers are not tasty!\n");
+									}
+				
+									else {
+										if (pblock == 1) {
+											inventory[0] = 0;
+											stream.write("Red block consumed.\n".as_bytes());
+										}		
+										if (pblock = 2) {
+											inventory[0] = 0;	
+											stream.write("Green block consumed.\n".as_bytes());										
+										}	
+										if (pblock == 3) {
+											inventory[0] = 0;	
+											stream.write("Blue block consumed.\n".as_bytes());										
+										}	
+										if (pblock == 4) {
+											inventory[0] = 0;
+											stream.write("Yellow block consumed.\n".as_bytes());											
+										}	
+										if (pblock == 5) {
+											inventory[0] = 0;
+											stream.write("Purple block consumed.\n".as_bytes());											
+										}	
+										if (pblock == 6) {
+											inventory[0] = 0;	
+											stream.write("Cyan block consumed.\n".as_bytes());										
+										}	
+										if (pblock == 7) {
+											inventory[0] = 0;
+											stream.write("White block consumed.\n".as_bytes());											
+										}						
+									}
                                 }
 
                                 ~"mix" => {
 										counter += 1;			
 
-                                        if (cmd_vec.len() == 0) {stream.write("Please the quadrant you wish to pick a block from!".as_bytes());}
+                                        if (cmd_vec.len() == 0) {stream.write("Please select the quadrant you wish to pick a block from!\n".as_bytes());}
                                         else {
                                                 let dir = cmd_vec.remove(0);
                                                 if !(allowed_direction(dir.clone())) {
-                                                        stream.write("Look direction is invalid!".as_bytes());
+                                                        stream.write("No block in specified direction!\n".as_bytes());
                                                 }
                                                 else {
                                                         let pblock: int = inventory[0];
-                                                    //    let wblock: int = checkForBlock(dir, WorldMap, PosX, PosY);
+                                                        let wblock: int = checkForBlock(dir, WorldMap.get(), PosX, PosY);
+
+														if (pblock == 1 && wblock == 1) {
+															pblock = 1;
+														}
+														else if (pblock == 2 && wblock == 2) {
+															pblock = 2;
+														}
+														else if (pblock == 3 && wblock == 3) {
+															pblock = 3;
+														}
+														else if ((pblock == 1 && wblock == 2) || (pblock == 2 && wblock == 1)) {
+															pblock = 4;
+														}
+														else if ((pblock == 1 && wblock == 3) || (pblock == 3 && wblock == 1)) {
+															pblock = 5;
+														}
+														else if ((pblock == 3 && wblock == 2) || (pblock == 2 && wblock == 3)) {
+															pblock = 6;
+														}
+														else if ((pblock == 4 && wblock == 5) || (pblock == 5 && wblock == 4)) {
+															pblock = 7;
+														}
+														else if ((pblock == 4 && wblock == 6) || (pblock == 6 && wblock == 4)) {
+															pblock = 7;
+														}
+														else if ((pblock == 6 && wblock == 5) || (pblock == 5 && wblock == 6)) {
+															pblock = 7;
+														}
+														else if (pblock == 7 || wblock == 7) {
+															pblock = 7;
+														}
+														else if (pblock == 6 || wblock == 6) {
+															pblock = 6;
+														}
+														else if (pblock == 5 || wblock == 5) {
+															pblock = 5;
+														}
+														else if (pblock == 4 || wblock == 4) {
+															pblock = 4;
+														}
+
+														if (dir.equals("north")) {
+															WorldMap[PosX][PosY + 1] = 0;
+														}
+														if (dir.equals("south")) {
+															WorldMap[PosX][PosY - 1] = 0;
+														}
+														if (dir.equals("west")) {
+															WorldMap[PosX - 1][PosY] = 0;
+														}
+														if (dir.equals("east")) {
+															WorldMap[PosX + 1][PosY] = 0;
+														}
                                                 }
                                         }
                                 }
