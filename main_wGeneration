@@ -12,6 +12,8 @@ use std::rt::io::net::ip::{SocketAddr, Ipv4Addr};
 use std::io::println;
 use std::cell::Cell;
 use std::task;
+use extra::arc;
+use extra::arc::RWArc;
 
 static PORT: int = 4414;
 static IPV4_LOOPBACK: &'static str = "127.0.0.1";
@@ -31,7 +33,8 @@ fn allowed_direction(dir: ~str) -> bool {
         else {return false;}
 }
 
-fn checkForBlock(dir: ~str, inVec: [[int, ..100], ..100], x: int, y: int) -> int {
+/*
+fn checkForBlock(dir: ~str, inVec: RWArc, x: int, y: int) -> int {
         
         let mut object_int: int = 0;
 
@@ -51,11 +54,15 @@ fn checkForBlock(dir: ~str, inVec: [[int, ..100], ..100], x: int, y: int) -> int
 		return object_int;
 		
 }
+*/
 
-fn check_empty_block(inVec: [[int, ..100], ..100], x: int, y: int) -> bool {
+/*
+fn check_empty_block(inVec: extra::arc::RWArc, x: int, y: int) -> bool {
    if (inVec[x][y] == 0) {return true;}
    else {return false;}
    }
+   */
+
 
 
 
@@ -81,19 +88,23 @@ fn main() {
 		println(fmt!("Listening on tcp port %d ...", PORT));
         let mut acceptor = socket.listen().unwrap();
   
+        let mut sharedMap: [[int, ..100], ..100] = [[0, ..100], ..100];
+		let sMap = arc::RWArc::new(sharedMap);
+		
+  
         for stream in acceptor.incoming() {
         println!("Welcome to the world of mystery!");
         let stream = Cell::new(stream);
         // Start a task to handle the connection
-        do task::spawn {
-		    
-	    let mut WorldMap: [[int, ..100], ..100] = [[0, ..100], ..100];
-		 
-		WorldMap[1][1] = 4;
-		WorldMap[2][2] = 5;
 		
-        let mut PosX: int = 1;
-        let mut PosY: int = 1;
+		let WorldMap = sMap.clone();
+		
+        do task::spawn {
+
+	
+		
+        let mut PosX: int = 2;
+        let mut PosY: int = 2;
 
         let mut objX: int = 0;  
         let mut objY: int = 0;
@@ -120,22 +131,32 @@ fn main() {
 
 				if (counter == 1) {
 					let mut rng = rand::task_rng();
-                	let mut randomX: int = rng.gen_integer_range(0, 100);
-					let mut randomY: int = rng.gen_integer_range(0, 100);
-					let mut randomColor: int = rng.gen_integer_range(1, 8);		
-					while (!check_empty_block(WorldMap,randomX,randomY)) {
-	                	randomX = rng.gen_integer_range(0, 100);
-						randomY = rng.gen_integer_range(0, 100);
-						randomColor = rng.gen_integer_range(1, 8);				
+                	let mut randomX: int = rng.gen_integer_range(0, 3);
+					let mut randomY: int = rng.gen_integer_range(0, 3);
+					let mut randomColor: int = rng.gen_integer_range(1, 7);	
+    
+                    do WorldMap.write |arg| {	
+					
+					while (!(arg[randomX][randomY] == 0)) {
+	                	randomX = rng.gen_integer_range(0, 3);
+						randomY = rng.gen_integer_range(0, 3);
+						randomColor = rng.gen_integer_range(1, 7);	
+                     }		
+					
+                    arg[randomX][randomY] = randomColor; 
+				    
 					}
-					WorldMap[randomX][randomY] = randomColor; 
 					counter = 0;
-					let string: ~str = fmt!("A block has been generated at: %?,%?", randomX, randomY);
+					
+					
+					let string: ~str = fmt!("A block has been generated at: %?,%?\n", randomX, randomY);
 					stream.write(string.as_bytes());
-				}
+					
+					}
+				
 
 				if !(allowed_command(main_command.clone())) {
-                        stream.write("The command you entered is invalid! Use help to view the list of commands available!".as_bytes());
+                        stream.write("The command you entered is invalid! Use help to view the list of commands available!\n".as_bytes());
                 }		
 
 				
@@ -144,34 +165,36 @@ fn main() {
                                 ~"move" => {
 										counter += 1;			
 
-                                        if (cmd_vec.len() == 0) {stream.write("Please specify the direction you are moving!".as_bytes());}
+                                        if (cmd_vec.len() == 0) {stream.write("Please specify the direction you are moving!\n".as_bytes());}
                                         
                                         else {
                                                 let dir = cmd_vec.remove(0);
                                                 
                                                 if !(allowed_direction(dir.clone())) {
-                                                        stream.write("Move direction is invalid!".as_bytes());
+                                                        stream.write("Move direction is invalid!\n".as_bytes());
                                                 }
                                                 
                                                 else {
 												
-                                                        WorldMap[PosX][PosY] = 0;
-                                                         
+                                                        do WorldMap.write |arg| {
+														arg[PosX][PosY] = 0;
+                                                        }
                                                         if (dir == ~"north") {PosY += 1;}
                                                         if (dir == ~"south") {PosY -= 1;}
                                                         if (dir == ~"west")  {PosX -= 1;}
                                                         if (dir == ~"east")  {PosX += 1;}
      
-	                         
-                                                        if (WorldMap[PosX][PosY] == 0) {
-                                                                WorldMap[PosX][PosY] = 10;
-																let cstring: ~str = fmt!("Your current coordinate is: <%?,%?>", PosX, PosY);
+	                                                    do WorldMap.write |arg| {
+                                                        if (arg[PosX][PosY] == 0) {
+                                                                arg[PosX][PosY] = 10;
+																let cstring: ~str = fmt!("Your current coordinate is: <%?,%?>\n", PosX, PosY);
                                                                 stream.write(cstring.as_bytes());
                                                         }
      
                                                         else {
-                                                                stream.write("the position is already occupied".as_bytes());
+                                                                stream.write("the position is already occupied\n".as_bytes());
                                                              }
+															 }
                                                    
                                                 }
                                         }
@@ -181,17 +204,30 @@ fn main() {
                                 ~"look" => {
 										counter += 1;			
 
-                                        if (cmd_vec.len() == 0) {stream.write("Please specify the direction you are looking!".as_bytes());}
+                                        if (cmd_vec.len() == 0) {stream.write("Please specify the direction you are looking!\n".as_bytes());}
                                         else {
                                                 let dir = cmd_vec.remove(0);
                                                 if !(allowed_direction(dir.clone())) {
-                                                        stream.write("Look direction is invalid!".as_bytes());
+                                                        stream.write("Look direction is invalid!\n".as_bytes());
                                                 }
-												
+																								
                                                 else { 
-												let pstring: ~str = print_object(checkForBlock(dir, WorldMap, PosX, PosY));
-												stream.write(pstring.as_bytes()); }
-                                        }                                                
+												    let mut pstring: ~str = ~"";
+													do WorldMap.write |arg| {
+													match dir {													
+													  ~"north" => {pstring = print_object(arg[PosX][PosY+1]);}
+													  ~"south" => {pstring = print_object(arg[PosX][PosY-1]);}
+													  ~"west" => {pstring = print_object(arg[PosX-1][PosY]);}
+													  ~"east" => {pstring = print_object(arg[PosX+1][PosY]);}
+													  _ => {}
+													}
+											     
+											     stream.write(pstring.as_bytes()); 
+												 stream.write("block is spotted!".as_bytes());
+											     
+												}
+                                          } 
+									}										  
                                 }
                                                         
                                 ~"inventory" => {
@@ -210,28 +246,36 @@ fn main() {
                                 ~"take" => {
 										counter += 1;			
 
-                                        if (cmd_vec.len() == 0) {stream.write("Please the quadrant you wish to pick a block from!".as_bytes());}
+                                        if (cmd_vec.len() == 0) {stream.write("Please specify the direction of the block you wish to pick!\n".as_bytes());}
                                         else {
                                                 let dir = cmd_vec.remove(0);
                                                 if !(allowed_direction(dir.clone())) {
-                                                        stream.write("Look direction is invalid!".as_bytes());
+                                                        stream.write("Take direction is invalid!\n".as_bytes());
                                                 }
                                                 else {
 												      if(dir == ~"north") {
-														object_int = WorldMap[PosX][PosY + 1];  
-														WorldMap[PosX][PosY + 1] = 0;
+													    do WorldMap.write |arg| {
+														object_int = arg[PosX][PosY + 1];  
+														arg[PosX][PosY + 1] = 0;
+														}
 														}
 													  if(dir == ~"south") {
-														object_int = WorldMap[PosX][PosY - 1];
-														WorldMap[PosX][PosY - 1] = 0;
+													    do WorldMap.write |arg| {
+														object_int = arg[PosX][PosY - 1];
+														arg[PosX][PosY - 1] = 0;
+														}
 													    }
 												      if(dir == ~"west") {
-														object_int = WorldMap[PosX - 1][PosY];
-														WorldMap[PosX - 1][PosY] = 0;
+														do WorldMap.write |arg| {
+														object_int = arg[PosX - 1][PosY];
+														arg[PosX - 1][PosY] = 0;
+														}
 														}
 												      if(dir == ~"east") {
-														object_int = WorldMap[PosX + 1][PosY];
-														WorldMap[PosX + 1][PosY] = 0;
+														do WorldMap.write |arg| {
+														object_int = arg[PosX + 1][PosY];
+														arg[PosX + 1][PosY] = 0;
+														}
 														}
                                                         
                                                         if (object_int < 8 && object_int > 0) {														           
@@ -253,11 +297,13 @@ fn main() {
 								   else {
 								     let obj_drop: int = inventory.remove(0);
 									 
-									 if (WorldMap[PosX+1][PosY] == 0) {WorldMap[PosX+1][PosY] = obj_drop;}
-									 else if (WorldMap[PosX-1][PosY] == 0) {WorldMap[PosX-1][PosY] = obj_drop;}
-									 else if (WorldMap[PosX][PosY+1] == 0) {WorldMap[PosX][PosY+1] = obj_drop;}
-									 else if (WorldMap[PosX][PosY-1] == 0) {WorldMap[PosX][PosY-1] = obj_drop;}
-								     else {stream.write("There is no place for you to drop your item!".as_bytes());}
+									 do WorldMap.write |arg| {
+									 if (arg[PosX+1][PosY] == 0) {arg[PosX+1][PosY] = obj_drop;}
+									 else if (arg[PosX-1][PosY] == 0) {arg[PosX-1][PosY] = obj_drop;}
+									 else if (arg[PosX][PosY+1] == 0) {arg[PosX][PosY+1] = obj_drop;}
+									 else if (arg[PosX][PosY-1] == 0) {arg[PosX][PosY-1] = obj_drop;}
+								     else {stream.write("There is no place for you to drop your item!\n".as_bytes());}
+									 }
                                         
                                 }
 								}
@@ -278,12 +324,12 @@ fn main() {
                                                 }
                                                 else {
                                                         let pblock: int = inventory[0];
-                                                        let wblock: int = checkForBlock(dir, WorldMap, PosX, PosY);
+                                                    //    let wblock: int = checkForBlock(dir, WorldMap, PosX, PosY);
                                                 }
                                         }
                                 }
 
-                                _        =>  {stream.write("We don't recognize your command...".as_bytes());}
+                                _        =>  {stream.write("We don't recognize your command...\n".as_bytes());}
                         }
 						}
 				
