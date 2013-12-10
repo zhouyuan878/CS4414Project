@@ -1,9 +1,15 @@
-use std::{str, io, run, os, path, libc};
-use std::rand;
-use std::rand::Rng;
+extern mod extra;
+
+
+use std::{io, run, os, path, libc, str};
+
+
 use std::rt::io::*;
 use std::io::ReaderUtil;
+use std::rand;
+use std::rand::Rng;
 use std::rt::io::net::ip::{SocketAddr, Ipv4Addr};
+use std::io::println;
 use std::cell::Cell;
 use std::task;
 
@@ -46,34 +52,46 @@ fn checkForBlock(dir: ~str, inVec: [[int, ..100], ..100], x: int, y: int) -> int
 		
 }
 
-//get and print the object at a specific coordinate
-fn print_object(input: int) {
+fn check_empty_block(inVec: [[int, ..100], ..100], x: int, y: int) -> bool {
+   if (inVec[x][y] == 0) {return true;}
+   else {return false;}
+   }
+
+
+
+//get the object at a specific coordinate
+fn print_object(input: int) -> ~str{
         match input {
-                1 => {println("Red"); }
-                2 => {println("Green"); }
-                3 => {println("Blue"); }
-                4 => {println("Yellow"); }
-                5 => {println("Purple"); }
-                6 => {println("Cyan"); }
-                7 => {println("White"); }
-                _ => {println("There is nothing there..."); }
+                1 => {return ~"Red"; }
+                2 => {return ~"Green"; }
+                3 => {return ~"Blue"; }
+                4 => {return ~"Yellow";}
+                5 => {return ~"Purple"; }
+                6 => {return ~"Cyan"; }
+                7 => {return ~"White"; }
+                _ => {return ~"There is nothing there...";}
         }
 }
 
 
 
 fn main() {
-  
-        static CMD_PROMPT: &'static str = "Enter your command:";
-
-        let mut WorldMap: [[int, ..100], ..100] = [[0, ..100], ..100];
+        let socket = net::tcp::TcpListener::bind(SocketAddr {ip: Ipv4Addr(127,0,0,1), port: PORT as u16});
 		
-		//WorldMap[1][1] = 4;
-		//WorldMap[2][2] = 5;
-
-        let mut rgb = [10, 0, 0];
-	let mut timer = 0;
-
+		println(fmt!("Listening on tcp port %d ...", PORT));
+        let mut acceptor = socket.listen().unwrap();
+  
+        for stream in acceptor.incoming() {
+        println!("Welcome to the world of mystery!");
+        let stream = Cell::new(stream);
+        // Start a task to handle the connection
+        do task::spawn {
+		    
+	    let mut WorldMap: [[int, ..100], ..100] = [[0, ..100], ..100];
+		 
+		WorldMap[1][1] = 4;
+		WorldMap[2][2] = 5;
+		
         let mut PosX: int = 1;
         let mut PosY: int = 1;
 
@@ -82,90 +100,76 @@ fn main() {
 
         let mut object_int: int = 0;
         let mut inventory: ~[int] = ~[];
+		
+		let mut counter: int = 0;
 
-        println("Welcome to the world of mystery!");
+        let mut stream = stream.take();
+        let mut buf = [0, ..500];
+		stream.write("Enter your command:\n".as_bytes());
+            
+            loop {		    
+                stream.read(buf);
+                let mut cmd_line = str::from_utf8(buf);
+				stream.write(cmd_line.as_bytes());
+				let mut cmd_vec: ~[~str] = cmd_line.split_iter(' ').filter_map(|x| if x != "" { Some(x.to_owned()) } else { None }).to_owned_vec();
+				let main_command = cmd_vec.remove(0);
+                stream.write(main_command.as_bytes());				
+                buf = [0, ..500];				
+				
 
-	let socket = net::tcp::TcpListener::bind(SocketAddr {ip: Ipv4Addr(127,0,0,1), port: PORT as u16});
-    
-	println(fmt!("Listening on tcp port %d ...", PORT));
-	let mut acceptor = socket.listen().unwrap();
-    
-	for stream in acceptor.incoming() {
-		println!("Saw connection!");
-        	let stream = Cell::new(stream);
-        	do task::spawn {
-            		let mut stream = stream.take();
-            		let mut buf = [0, ..500];
-            		stream.write("welcome\n".as_bytes());
-            		loop {
-               			stream.read(buf);
-                		let request_str = str::from_utf8(buf);
-                		stream.write("Thanks for telling me about ::".as_bytes());
-                		stream.write(buf);
-            		}
-        	}
-    	}
 
-        loop {  
-		if (timer == 1) {
-			let mut rng = rand::task_rng();
-			let mut xPos: int = rng.gen_integer_range(1, 2);
-			let mut yPos: int = rng.gen_integer_range(2, 3);
+				if (counter == 10) {
+					let mut rng = rand::task_rng();
+                	let mut randomX: int = rng.gen_integer_range(0, 100);
+					let mut randomY: int = rng.gen_integer_range(0, 100);
+					let mut randomColor: int = rng.gen_integer_range(1, 8);		
+					while (!check_empty_block(WorldMap,randomX,randomY)) {
+	                	randomX = rng.gen_integer_range(0, 100);
+						randomY = rng.gen_integer_range(0, 100);
+						randomColor = rng.gen_integer_range(1, 8);				
+					}
+					WorldMap[randomX][randomY] = randomColor; 
+					counter = 0;
 
-      			if (rgb[0] == 10) {
-	 			WorldMap[xPos][yPos] = 1;
-	 			rgb[0] = 0;
-      				} 
-			else if (rgb[1] == 10) {
-				WorldMap[xPos][yPos] = 2;
-				rgb[1] = 0;
-      			} 
-			else if (rgb[2] == 10) {
-	 			WorldMap[xPos][yPos] = 3;
-	 			rgb[2] = 0;
-      			} 
-			timer = 0;
-		}
+				}
 
-                println(CMD_PROMPT);
+				if !(allowed_command(main_command.clone())) {
+                        stream.write("The command you entered is invalid! Use help to view the list of commands available!".as_bytes());
+                }		
 
-                let mut cmd_line = io::stdin().read_line();
-                let mut cmd_vec: ~[~str] = cmd_line.split_iter(' ').filter_map(|x| if x != "" { Some(x.to_owned()) } else { None }).to_owned_vec();
-  
-                let main_command = cmd_vec.remove(0);
-  
-                if !(allowed_command(main_command.clone())) {
-                        println("The command you entered is invalid! Use help to view the list of commands available!");
-                }
- 
-                else {
-                        match main_command {
-                                ~"exit" => {return;}
+				
+				else {
+					match main_command {
                                 ~"move" => {
-                                        if (cmd_vec.len() == 0) {println("Please specify the direction you are moving!");}
+										counter += 1;			
+
+                                        if (cmd_vec.len() == 0) {stream.write("Please specify the direction you are moving!".as_bytes());}
                                         
                                         else {
                                                 let dir = cmd_vec.remove(0);
                                                 
                                                 if !(allowed_direction(dir.clone())) {
-                                                        println("Move direction is invalid!");
+                                                        stream.write("Move direction is invalid!".as_bytes());
                                                 }
                                                 
                                                 else {
+												
                                                         WorldMap[PosX][PosY] = 0;
                                                          
                                                         if (dir == ~"north") {PosY += 1;}
-                                                            if (dir == ~"south") {PosY -= 1;}
+                                                        if (dir == ~"south") {PosY -= 1;}
                                                         if (dir == ~"west")  {PosX -= 1;}
                                                         if (dir == ~"east")  {PosX += 1;}
      
+	                         
                                                         if (WorldMap[PosX][PosY] == 0) {
                                                                 WorldMap[PosX][PosY] = 10;
-                                                                println(fmt!("Your current coordinate is: <%?,%?>", PosX, PosY));
+																let cstring: ~str = fmt!("Your current coordinate is: <%?,%?>", PosX, PosY);
+                                                                stream.write(cstring.as_bytes());
                                                         }
      
                                                         else {
-                                                                println("the position is already occupied");
+                                                                stream.write("the position is already occupied".as_bytes());
                                                              }
                                                    
                                                 }
@@ -174,33 +178,42 @@ fn main() {
                                 }
                                                   
                                 ~"look" => {
-                                        if (cmd_vec.len() == 0) {println("Please specify the direction you are looking!");}
+										counter += 1;			
+
+                                        if (cmd_vec.len() == 0) {stream.write("Please specify the direction you are looking!".as_bytes());}
                                         else {
                                                 let dir = cmd_vec.remove(0);
                                                 if !(allowed_direction(dir.clone())) {
-                                                        print("Look direction is invalid!");
+                                                        stream.write("Look direction is invalid!".as_bytes());
                                                 }
 												
-                                                else { print_object(checkForBlock(dir, WorldMap, PosX, PosY)); }
+                                                else { 
+												let pstring: ~str = print_object(checkForBlock(dir, WorldMap, PosX, PosY));
+												stream.write(pstring.as_bytes()); }
                                         }                                                
                                 }
                                                         
                                 ~"inventory" => {
+										counter += 1;			
+
                                         let mut i = 0;
                                       
                                         while i < inventory.len() {
-                                                print_object(inventory[i]);
+										        let tstring: ~str = print_object(inventory[i]);
+                                                stream.write(tstring.as_bytes());
                                                 i += 1;
                                         }
                                 }
                                 
 
                                 ~"take" => {
-                                        if (cmd_vec.len() == 0) {println("Please the quadrant you wish to pick a block from!");}
+										counter += 1;			
+
+                                        if (cmd_vec.len() == 0) {stream.write("Please the quadrant you wish to pick a block from!".as_bytes());}
                                         else {
                                                 let dir = cmd_vec.remove(0);
                                                 if !(allowed_direction(dir.clone())) {
-                                                        print("Look direction is invalid!");
+                                                        stream.write("Look direction is invalid!".as_bytes());
                                                 }
                                                 else {
 												      if(dir == ~"north") {
@@ -231,8 +244,10 @@ fn main() {
 
 
                                 ~"drop" => {
-                                  if (inventory.len() == 0) {
-								     println("Your inventory is currently empty!");
+								   counter += 1;			
+
+								   if (inventory.len() == 0) {
+								     stream.write("Your inventory is currently empty!".as_bytes());
 									}
 								   else {
 								     let obj_drop: int = inventory.remove(0);
@@ -241,23 +256,24 @@ fn main() {
 									 else if (WorldMap[PosX-1][PosY] == 0) {WorldMap[PosX-1][PosY] = obj_drop;}
 									 else if (WorldMap[PosX][PosY+1] == 0) {WorldMap[PosX][PosY+1] = obj_drop;}
 									 else if (WorldMap[PosX][PosY-1] == 0) {WorldMap[PosX][PosY-1] = obj_drop;}
-								     else {print("There is no place for you to drop your item!");}
+								     else {stream.write("There is no place for you to drop your item!".as_bytes());}
                                         
                                 }
-								  
-                                        
-                                }
+								}
 
                                 ~"eat" => {
-                                        
+                                	counter += 1;			
+       
                                 }
 
                                 ~"mix" => {
-                                        if (cmd_vec.len() == 0) {println("Please the quadrant you wish to pick a block from!");}
+										counter += 1;			
+
+                                        if (cmd_vec.len() == 0) {stream.write("Please the quadrant you wish to pick a block from!".as_bytes());}
                                         else {
                                                 let dir = cmd_vec.remove(0);
                                                 if !(allowed_direction(dir.clone())) {
-                                                        print("Look direction is invalid!");
+                                                        stream.write("Look direction is invalid!".as_bytes());
                                                 }
                                                 else {
                                                         let pblock: int = inventory[0];
@@ -266,12 +282,27 @@ fn main() {
                                         }
                                 }
 
-                                _        =>  {println("We don't recognize your command...");}
+                                _        =>  {stream.write("We don't recognize your command...".as_bytes());}
                         }
-                }
-	timer += 1;
+						}
+				
+				
+			
+			
+				
+            }
         }
-}
+       }
+	   }
+       
+	   
+
+                
+  
+                
+  
+               
+
                                                   
                           
   
