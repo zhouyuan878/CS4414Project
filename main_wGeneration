@@ -118,7 +118,7 @@ fn main() {
 				
 
 
-				if (counter == 10) {
+				if (counter == 1) {
 					let mut rng = rand::task_rng();
                 	let mut randomX: int = rng.gen_integer_range(0, 100);
 					let mut randomY: int = rng.gen_integer_range(0, 100);
@@ -130,7 +130,8 @@ fn main() {
 					}
 					WorldMap[randomX][randomY] = randomColor; 
 					counter = 0;
-
+					let string: ~str = fmt!("A block has been generated at: %?,%?", randomX, randomY);
+					stream.write(string.as_bytes());
 				}
 
 				if !(allowed_command(main_command.clone())) {
