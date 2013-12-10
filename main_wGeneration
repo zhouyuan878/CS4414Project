@@ -314,7 +314,7 @@ fn main() {
 									let pblock: int = inventory[0];
 									
 									if (pblock == 0) {
-										stream.write("Fingers are not tasty!\n");
+										stream.write("Fingers are not tasty!\n".as_bytes());
 									}
 				
 									else {
@@ -322,7 +322,7 @@ fn main() {
 											inventory[0] = 0;
 											stream.write("Red block consumed.\n".as_bytes());
 										}		
-										if (pblock = 2) {
+										if (pblock == 2) {
 											inventory[0] = 0;	
 											stream.write("Green block consumed.\n".as_bytes());										
 										}	
@@ -359,17 +359,19 @@ fn main() {
                                                         stream.write("No block in specified direction!\n".as_bytes());
                                                 }
                                                 else {
-                                                        let pblock: int = inventory[0];
-                                                        let wblock: int = 0;
-														
+                                                        														
 														do WorldMap.write |arg| {
+														
+														let mut pblock: int = inventory[0];
+                                                        let mut wblock: int = 0;
+														
 														if (dir == ~"north") {
 															wblock = arg[PosX][PosY+1];
 														}
 														if (dir == ~"south") {
 															wblock = arg[PosX][PosY-1];
 														}
-														if (dir == ~east") {
+														if (dir == ~"east") {
 															wblock = arg[PosX+1][PosY];
 														}
 														if (dir == ~"west") {
@@ -416,6 +418,8 @@ fn main() {
 															pblock = 4;
 														}
 
+														inventory[0] = pblock;
+														
 														if (dir == ~"north") {
 															arg[PosX][PosY + 1] = 0;
 														}
@@ -434,15 +438,11 @@ fn main() {
                                 }
 
                                 _        =>  {
-								      stream.write("We don't recognize your command!".as_bytes());
+								      stream.write("We don't recognize your command!\n".as_bytes());
 									  }
                         }
 						}
-				
-				
-			
-			
-				
+							
             }
         }
        }
