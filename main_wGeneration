@@ -360,8 +360,22 @@ fn main() {
                                                 }
                                                 else {
                                                         let pblock: int = inventory[0];
-                                                        let wblock: int = checkForBlock(dir, WorldMap.get(), PosX, PosY);
-
+                                                        let wblock: int = 0;
+														
+														do WorldMap.write |arg| {
+														if (dir == ~"north") {
+															wblock = arg[PosX][PosY+1];
+														}
+														if (dir == ~"south") {
+															wblock = arg[PosX][PosY-1];
+														}
+														if (dir == ~east") {
+															wblock = arg[PosX+1][PosY];
+														}
+														if (dir == ~"west") {
+															wblock = arg[PosX-1][PosY];
+														}														
+														
 														if (pblock == 1 && wblock == 1) {
 															pblock = 1;
 														}
@@ -402,23 +416,26 @@ fn main() {
 															pblock = 4;
 														}
 
-														if (dir.equals("north")) {
-															WorldMap[PosX][PosY + 1] = 0;
+														if (dir == ~"north") {
+															arg[PosX][PosY + 1] = 0;
 														}
-														if (dir.equals("south")) {
-															WorldMap[PosX][PosY - 1] = 0;
+														if (dir == ~"south") {
+															arg[PosX][PosY - 1] = 0;
 														}
-														if (dir.equals("west")) {
-															WorldMap[PosX - 1][PosY] = 0;
+														if (dir == ~"west") {
+															arg[PosX - 1][PosY] = 0;
 														}
-														if (dir.equals("east")) {
-															WorldMap[PosX + 1][PosY] = 0;
+														if (dir == ~"east") {
+															arg[PosX + 1][PosY] = 0;
 														}
                                                 }
+												}
                                         }
                                 }
 
-                                _        =>  {stream.write("We don't recognize your command...\n".as_bytes());}
+                                _        =>  {
+								      stream.write("We don't recognize your command!".as_bytes());
+									  }
                         }
 						}
 				
