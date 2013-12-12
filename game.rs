@@ -63,12 +63,12 @@ fn get_object(input: int) -> ~str{
 fn main() {
         let socket = net::tcp::TcpListener::bind(SocketAddr {ip: Ipv4Addr(127,0,0,1), port: PORT as u16});
 		
-		println(fmt!("Game server is up and running. "));
-		println(fmt!("To start the game, establish a connnection to port 4414 on localhost!"));
+	println(fmt!("Game server is up and running. "));
+	println(fmt!("To start the game, establish a connnection to port 4414 on localhost!"));
         let mut acceptor = socket.listen().unwrap();
   
         let mut sharedMap: [[int, ..100], ..100] = [[0, ..100], ..100];
-		let sMap = arc::RWArc::new(sharedMap);
+	let sMap = arc::RWArc::new(sharedMap);
 		
   
         for stream in acceptor.incoming() {
@@ -76,7 +76,7 @@ fn main() {
         let stream = Cell::new(stream);
         // Start a task to handle the connection
 		
-		let WorldMap = sMap.clone();
+	let WorldMap = sMap.clone();
 		
         do task::spawn {
 
@@ -87,36 +87,36 @@ fn main() {
         let mut object_int: int = 0;
         let mut inventory: ~[int] = ~[];
 		
-		let mut counter: int = 0;
+	let mut counter: int = 0;
 
         let mut stream = stream.take();
         let mut buf = [0, ..500];
-		stream.write("Hello! Welcome to the World of Mystery!\n".as_bytes());
+	stream.write("Hello! Welcome to the World of Mystery!\n".as_bytes());
 		           
             loop {		
-				stream.write("\n".as_bytes());
+		stream.write("\n".as_bytes());
                 stream.write("Enter your command with a space at the end:\n".as_bytes());			
                 stream.read(buf);
                 let mut cmd_line = str::from_utf8(buf);
-				let mut cmd_vec: ~[~str] = cmd_line.split_iter(' ').filter_map(|x| if x != "" { Some(x.to_owned()) } else { None }).to_owned_vec();
-				let main_command = cmd_vec.remove(0);				
+		let mut cmd_vec: ~[~str] = cmd_line.split_iter(' ').filter_map(|x| if x != "" { Some(x.to_owned()) } else { None }).to_owned_vec();
+		let main_command = cmd_vec.remove(0);				
                 buf = [0, ..500];				
 				
-				if (counter == 1) {
-					let mut rng = rand::task_rng();
-                			let mut randomX: int = rng.gen_integer_range(0, 100);
-					let mut randomY: int = rng.gen_integer_range(0, 100);
-					let mut randomColor: int = rng.gen_integer_range(1, 8);	
+		if (counter == 1) {
+			let mut rng = rand::task_rng();
+               		let mut randomX: int = rng.gen_integer_range(0, 100);
+			let mut randomY: int = rng.gen_integer_range(0, 100);
+			let mut randomColor: int = rng.gen_integer_range(1, 8);	
     
                     do WorldMap.write |arg| {	
 					
-					while (!(arg[randomX][randomY] == 0)) {
+				while (!(arg[randomX][randomY] == 0)) {
 	                	randomX = rng.gen_integer_range(0, 100);
-						randomY = rng.gen_integer_range(0, 100);
-						randomColor = rng.gen_integer_range(1, 8);	
+				randomY = rng.gen_integer_range(0, 100);
+				randomColor = rng.gen_integer_range(1, 8);	
                      }		
 					
-                    arg[randomX][randomY] = randomColor; 
+                    			arg[randomX][randomY] = randomColor; 
 				    
 					}
 					counter = 0;
@@ -130,17 +130,17 @@ fn main() {
 			//	    stream.write(" \n".as_byte());
 					}
 				
-				if !(allowed_command(main_command.clone())) {
-                        stream.write("The command you entered is invalid! Use help to view the list of commands available!\n".as_bytes());
+			if !(allowed_command(main_command.clone())) {
+                		 stream.write("The command you entered is invalid! Use help to view the list of commands available!\n".as_bytes());
                 }		
 				
 				else {
 					match main_command {
-								~"help" => {
-								stream.write("The commands available are: move, look, inventory, pick, drop, eat and mix.\n".as_bytes());
-								}
+				~"help" => {
+						stream.write("The commands available are: move, look, inventory, pick, drop, eat and mix.\n".as_bytes());
+						}
                                 ~"move" => {
-										counter += 1;			
+					counter += 1;			
                                         if (cmd_vec.len() == 0) {stream.write("Please specify the direction you are moving!\n".as_bytes());}                                       
                                         else {
                                                 let dir = cmd_vec.remove(0);                                                
