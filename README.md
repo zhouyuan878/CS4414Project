@@ -19,13 +19,13 @@ look: Check the object(block or player) at a specified coordinate on the map if 
 
 pick: Pick the block at a specified coordinate on the map if there is any. Takes a direction parameter of "north", "south", "west" or "east".
 
-inventory: Check the blocks available in the player's inventory. Take no parameter.
+inventory: Check the blocks available in the player's inventory. Takes no parameter.
 
-drop: Remove a block from the player's inventory and drop it on one of the nearest coordinate on the map. Take no parameter.
+drop: Remove a block from the player's inventory and drop it on one of the nearest coordinate on the map. Takes no parameter.
 
-eat: Consume a block in the player's inventory. Take no parameter. 
+eat: Consume a block in the player's inventory. Takes no parameter. 
 
-mix: Mix a nearby block with a in the player's inventory. Takes a direction parameter of "north", "south", "west" or "east".
+mix: Mix a nearby block with a block in the player's inventory. Takes a direction parameter of "north", "south", "west" or "east".
 
 
 
