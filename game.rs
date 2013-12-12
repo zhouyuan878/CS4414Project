@@ -16,8 +16,6 @@ use extra::arc;
 use extra::arc::RWArc;
 
 static PORT: int = 4414;
-static IPV4_LOOPBACK: &'static str = "127.0.0.1";
-static mut visitor_count: uint = 0;
 
 //check if command is allowed
 fn allowed_command(cmd: ~str) -> bool {
