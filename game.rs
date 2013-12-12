@@ -43,7 +43,7 @@ fn print_object(input: int) -> ~str{
                 5 => {return ~"Purple block is spotted!"; }
                 6 => {return ~"Cyan block is spotted!"; }
                 7 => {return ~"White block is spotted!"; }
-				10 => {return ~"A player is spotted!";}
+		10 => {return ~"A player is spotted!";}
                 _ => {return ~"There is nothing there...";}
         }
 }
@@ -106,15 +106,15 @@ fn main() {
 				
 				if (counter == 1) {
 					let mut rng = rand::task_rng();
-                	let mut randomX: int = rng.gen_integer_range(0, 10);
-					let mut randomY: int = rng.gen_integer_range(0, 10);
+                			let mut randomX: int = rng.gen_integer_range(0, 100);
+					let mut randomY: int = rng.gen_integer_range(0, 100);
 					let mut randomColor: int = rng.gen_integer_range(1, 8);	
     
                     do WorldMap.write |arg| {	
 					
 					while (!(arg[randomX][randomY] == 0)) {
-	                	randomX = rng.gen_integer_range(0, 10);
-						randomY = rng.gen_integer_range(0, 10);
+	                	randomX = rng.gen_integer_range(0, 100);
+						randomY = rng.gen_integer_range(0, 100);
 						randomColor = rng.gen_integer_range(1, 8);	
                      }		
 					
