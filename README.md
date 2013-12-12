@@ -11,8 +11,8 @@ world, which can be consumed by players and produce distinctive effects. Two blo
 
 
 How to play the game: Compile and run the game.rs file and the game server will be started. Use command 
-"nc localhost 4414" to establish a connection to the game server which starts the game. Multiple connections 
-can be established to support multiplayers. 
+"nc localhost 4414" to establish a connection to the game server which starts the game. Multiple players can 
+connect to the game server and play the game at the same time. 
 
 
 
