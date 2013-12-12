@@ -9,6 +9,14 @@ Blocks of different colors including Red, Green, Blue, Yellow, Purple, Cyan and 
 world, which can be consumed by players and produce distinctive effects. Two blocks can also be mixed to produce a new block.
 
 
+
+How to play the game: Compile and run the game.rs file and the game server will be started. Use command 
+"nc localhost 4414" to establish a connection to the game server which starts the game. Multiple connections 
+can be established to support multiplayers. 
+
+
+
+
 Commands available:
 
 help: Display the set of commands the player could use.
